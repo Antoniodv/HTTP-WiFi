@@ -1,4 +1,4 @@
-/* Esempio dell'utilizzo dello shield WiFi IDW01M1 (su cui si trova il modulo SPWF01SA) 
+/* Esempio dell'utilizzo dello shield WiFi IDW01M1 (su cui si trova il modulo SPWF01SA) sul compilatore online mbed
  * per l'esecuzione di richieste HTTP di tipo GET 
  * In questo caso è stato fatto un tentativo connettendosi a www.facebook.com e il risultato delle stampe è:
  

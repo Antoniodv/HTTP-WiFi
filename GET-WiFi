@@ -1,0 +1,86 @@
+/* Esempio dell'utilizzo dello shield WiFi IDW01M1 (su cui si trova il modulo SPWF01SA) 
+ * per l'esecuzione di richieste HTTP di tipo GET 
+ * In questo caso è stato fatto un tentativo connettendosi a www.facebook.com e il risultato delle stampe è:
+ 
+  ...
+  now connected
+
+  IP Address is: *****
+
+  MAC Address is: *****
+
+  connected to host server
+  sent 43 [GET / HTTP/1.1]
+  recv 64 [HTTP/1.1 302 Found]
+
+  Closing Socket
+  ...
+*/  
+  
+#include "mbed.h"
+#include "SpwfInterface.h" //nermette l'utilizzo del mosudulo WiFi
+#include "TCPSocket.h" //nermette l'utilizzo dei metodi per instaurare una connessione TCP
+
+Serial pc(USBTX, USBRX); //necessario per le stampe di debug (va usato consapevolmente perchè puo interferire con il modulo WiFi
+DigitalOut myled(LED1); //led di debug
+SpwfSAInterface spwf(D8, D2, false); //inizializzazione interfaccia modulo
+
+
+int main() {
+    
+    int err;    
+    char * ssid = "*****"; //da sostituire con il proprio ssid
+    char * seckey = "*****"; //da sostituire con la propria password 
+          
+    pc.printf("\r\nX-NUCLEO-IDW01M1 mbed Application\r\n");     
+    pc.printf("\r\nconnecting to AP\r\n");
+         
+           
+    if(spwf.connect(ssid, seckey, NSAPI_SECURITY_WPA2)) {      
+        pc.printf("\r\nnow connected\r\n");
+    } else {
+        pc.printf("\r\nerror connecting to AP.\r\n");
+        return -1;
+    }   
+    
+    
+    const char *ip = spwf.get_ip_address();
+    const char *mac = spwf.get_mac_address();
+    
+    
+    pc.printf("\r\nIP Address is: %s\r\n", (ip) ? ip : "No IP");
+    pc.printf("\r\nMAC Address is: %s\r\n", (mac) ? mac : "No MAC");    
+    
+   
+    
+    TCPSocket socket(&spwf);
+    err = socket.connect("www.facebook.com", 80);
+    if(err!=0) 
+    {
+      pc.printf("\r\nCould not connect to Socket, err = %d!!\r\n", err); 
+      return -1;
+    } else pc.printf("\r\nconnected to host server\r\n"); 
+   
+    // Send a simple http request
+    char sbuffer[] = "GET / HTTP/1.1\r\nHost: www.facebook.com\r\n\r\n";
+    int scount = socket.send(sbuffer, sizeof sbuffer);
+    pc.printf("sent %d [%.*s]\r\n", scount, strstr(sbuffer, "\r\n")-sbuffer, sbuffer);
+
+    // Recieve a simple http response and print out the response line
+    char rbuffer[64];
+    int rcount = socket.recv(rbuffer, sizeof rbuffer);
+    pc.printf("recv %d [%.*s]\r\n", rcount, strstr(rbuffer, "\r\n")-rbuffer, rbuffer);
+
+    pc.printf("\r\nClosing Socket\r\n");
+    socket.close();
+    
+    pc.printf("\r\nUnsecure Socket Test complete.\r\n");
+    pc.printf ("Socket closed\n\r");
+    spwf.disconnect();
+    pc.printf ("WIFI disconnected, exiting ...\n\r");
+    
+    while(1){ 
+      wait(1);
+      myled = !myled;
+    }
+}

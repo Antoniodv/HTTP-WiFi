@@ -21,7 +21,7 @@
 #include "SpwfInterface.h" //nermette l'utilizzo del mosudulo WiFi
 #include "TCPSocket.h" //nermette l'utilizzo dei metodi per instaurare una connessione TCP
 
-Serial pc(USBTX, USBRX); //necessario per le stampe di debug (va usato consapevolmente perchè puo interferire con il modulo WiFi
+Serial pc(USBTX, USBRX); //necessario per le stampe di debug (va usato consapevolmente perchè puo interferire con il modulo WiFi)
 DigitalOut myled(LED1); //led di debug
 SpwfSAInterface spwf(D8, D2, false); //inizializzazione interfaccia modulo
 

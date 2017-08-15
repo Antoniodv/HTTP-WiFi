@@ -20,6 +20,9 @@
  * NetworkSocketAPI
  * X_NUCLEO_IDW01M1
  * MBED-OS 2  
+ *
+ * E' stata scelta una GET perchè sarà poi necessaria per aprire una websocket ma basta cambiare il contenuto degli argomenti
+ * di socket.send() per realizzare una POST. 
 */  
   
 #include "mbed.h"

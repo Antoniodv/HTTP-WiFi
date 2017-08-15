@@ -1,8 +1,8 @@
 /* Questo programma utilizza i metodi visti in HTTP-GET per aprire una websocket e inviare al server desiderato
  * la stringa "Hello World" periodicamente.
- * Poichè Websocket.h è stata scritta solo dopo la realizzazione di mbed-os 5 è stato necessario modificare il file 
+ * Poichè la libreria Websocket è stata scritta solo dopo la realizzazione di mbed-os 5 è stato necessario modificare il file 
  * "Websocket.cpp" (scaricabile dal sito mbed) per renderlo compatibile con mbed-os 2 (necessario per il funzionamento di tutte
- * le altre librerie utilizzate.
+ * le altre librerie utilizzate ma non ancora portate su mbed-os 5).
  * Il file "Websocket.cpp" modificato è presente nella cartella di questo file.
  * Ancora non è stata effettuata una prova vera e propria con un server online ma è stato verificato tramite Wireshark che
  * la richiesta per l'apertura della websocket è eseguita come descritto nella documentazione sull'upgrade da http a websocket.

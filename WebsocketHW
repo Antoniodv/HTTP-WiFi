@@ -4,6 +4,8 @@
  * "Websocket.cpp" (scaricabile dal sito mbed) per renderlo compatibile con mbed-os 2 (necessario per il funzionamento di tutte
  * le altre librerie utilizzate.
  * Il file "Websocket.cpp" modificato è presente nella cartella di questo file.
+ * Ancora non è stata effettuata una prova vera e propria con un server online ma è stato verificato tramite Wireshark che
+ * la richiesta per l'apertura della websocket è eseguita come descritto nella documentazione sull'upgrade da http a websocket.
  */
 
 #include "mbed.h"

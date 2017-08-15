@@ -15,6 +15,11 @@
 
   Closing Socket
   ...
+  
+ *Per compilare è necessario inserire nella cartella del progetto su mbed i seguenti pacchetti:
+ * NetworkSocketAPI
+ * X_NUCLEO_IDW01M1
+ * MBED-OS 2  
 */  
   
 #include "mbed.h"

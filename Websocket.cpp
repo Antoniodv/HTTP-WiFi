@@ -2,7 +2,7 @@
 
 #define MAX_TRY_WRITE 20
 #define MAX_TRY_READ 10
-
+ 
 //Debug is disabled by default
 #if 0
 #define DBG(x, ...) std::printf("[WebSocket : DBG]"x"\r\n", ##__VA_ARGS__); 
@@ -15,6 +15,7 @@
 #endif
 
 #define INFO(x, ...) printf("[WebSocket : INFO]"x"\r\n", ##__VA_ARGS__); 
+
 
 Websocket::Websocket(char * url, NetworkStack * iface) {
     fillFields(url);
@@ -246,27 +247,28 @@ bool Websocket::read(char * message) {
         }
 
         socket.set_timeout(1);
-        if (socket.recv(&opcode, 1) != 1) {
+        if (socket.recv(&opcode, 1) != 1) {    //1 text, 9 ping https://tools.ietf.org/html/rfc6455#page-65
             socket.set_timeout(2000);
             return false;
         }
-
         socket.set_timeout(2000);
-
-        if (opcode == 0x81)
-            break;
+        char code = opcode & 0x0f;
+        if (code == 0x01 || code == 0x09) break; //riscrivere opcode nel caso al posto di code
     }
     DBG("opcode: 0x%X\r\n", opcode);
 
-    readChar(&c);
+    readChar(&c); // il primo carattere rappresenta la payload length
+    DBG("il primo carattere %c \r\n", c);
     len_msg = c & 0x7f;
+    DBG("len_msg %c \r\n", len_msg);
     is_masked = c & 0x80;
-    if (len_msg == 126) {
-        readChar(&c);
-        len_msg = c << 8;
-        readChar(&c);
-        len_msg += c;
-    } else if (len_msg == 127) {
+    if (len_msg == 126) { //extended payload bits 
+        readChar(&c); //extended payload length
+        len_msg = c; //a
+        //len_msg = c << 8;
+        //readChar(&c);
+        //len_msg += c;
+    } else if (len_msg == 127) { 
         len_msg = 0;
         for (int i = 0; i < 8; i++) {
             readChar(&c);
@@ -287,9 +289,10 @@ bool Websocket::read(char * message) {
     }
 
     int nb = read(message, len_msg, len_msg);
-    if (nb != len_msg)
+    if (nb != len_msg){
+        DBG("nb!=len_msg"); //a
         return false;
-
+    }
     for (i = 0; i < len_msg; i++) {
         message[i] = message[i] ^ mask[i % 4];
     }
@@ -297,6 +300,7 @@ bool Websocket::read(char * message) {
     message[len_msg] = '\0';
 
     return true;
+    
 }
 
 bool Websocket::close() {

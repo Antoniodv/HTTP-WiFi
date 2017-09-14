@@ -2,6 +2,7 @@
  * per comunicare con il server locale del SEPA-engine e poter ricevere sia i messaggi di ping che di update.
  * A tal fine è stata modificata ulteriormente la Websocket.cpp che inizialmente non permetteva di ricevere i messaggi di ping.
  * I file Websocket.h e Websocket.cpp modificati sono presenti nella cartella HTTP-WiFi.
+ */
 
 #include "mbed.h"
 #include "SpwfInterface.h"
